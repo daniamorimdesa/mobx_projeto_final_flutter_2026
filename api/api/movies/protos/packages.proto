@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+message User{
+    required int32 id = 1;
+    required string username = 2;
+    required string password = 3;
+}
+
+message Movie{
+    required int32 id = 1;
+    required string title = 2;
+    required bytes cover = 3;
+    required float value = 4;
+    required string year = 5;
+    required string director = 6;
+    required string sinopse = 7;
+}
+
+message Movies{
+    repeated Movie movies = 1;
+}
+
+message Rental{
+    required int32 user_id = 1;
+    required int32 movie_id = 2;
+}
