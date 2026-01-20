@@ -23,8 +23,6 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    // testar o encode/decode do protobuf
-    // testeProto();
   }
 
   @override
@@ -40,27 +38,3 @@ class _MainAppState extends State<MainApp> {
     );
   }
 }
-
-
-  // void testeProto() {
-  //   try {
-  //     // criar um usuário
-  //     final user = User()
-  //       ..name = "Daniela"
-  //       ..email = "dani@email.com"
-  //       ..address = "Rua 1, do lado da rua 2";
-
-  //     // testar a serialização - (User -> Uint8List)
-  //     final encoded = UserAdapter.encodeProto(user);
-  //     debugPrint("Encoded: $encoded. Tamanho: ${encoded.length}");
-
-  //     // testar a desserialização - (Uint8List -> User)
-  //     final decoded = UserAdapter.decodeProto(encoded);
-  //     debugPrint(
-  //       "Decoded: \nname: ${decoded.name} \nemail: ${decoded.email} \naddress: ${decoded.address}",
-  //     );
-  //   } catch (e, st) {
-  //     debugPrint('Falha no autoteste do proto: $e');
-  //     debugPrint(st.toString());
-  //   }
-  // }

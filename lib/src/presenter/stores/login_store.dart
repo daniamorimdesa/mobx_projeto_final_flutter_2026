@@ -1,3 +1,4 @@
+// login_store.dart: gerencia o estado de login do usuário usando ChangeNotifier
 import 'package:flutter/material.dart';
 import 'package:projeto_final_flutter_2026/src/external/datasources/user_datasource.dart';
 import 'package:projeto_final_flutter_2026/src/external/protos/packages.pb.dart';

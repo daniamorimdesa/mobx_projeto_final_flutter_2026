@@ -2,6 +2,58 @@
 
 Esta API foi desenvolvida com FastAPI e utiliza Protobuf para comunicação entre o backend e o frontend. Ela gerencia usuários, filmes, aluguéis e o status de visualização dos filmes.
 
+## Como subir a API
+
+### Pré-requisitos
+- Python 3.11+
+- Poetry instalado ([instruções de instalação](https://python-poetry.org/docs/#installation))
+
+### Instalação das dependências
+Navegue até a pasta `api/api` e execute:
+
+```bash
+poetry install
+```
+
+### Popular o banco de dados (primeira vez)
+Após a instalação, popule o banco com dados iniciais:
+
+```bash
+poetry run python populate_db.py
+```
+
+Isso criará:
+- Usuário de teste: `joao` / `1234`
+- 5 filmes de exemplo
+
+### Executar a API
+```bash
+poetry run uvicorn main:app --reload
+```
+
+A API ficará disponível em: `http://localhost:8000`
+
+Para visualizar a documentação interativa, acesse:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+### Opções adicionais
+Para executar em uma porta diferente:
+```bash
+poetry run uvicorn main:app --reload --port 8080
+```
+
+Para permitir acesso externo:
+```bash
+poetry run uvicorn main:app --reload --host 0.0.0.0
+```
+
+### Ativar ambiente virtual do Poetry (opcional)
+```bash
+poetry shell
+uvicorn main:app --reload
+```
+
 ## Rotas HTTP
 
 ### 1. Autenticação

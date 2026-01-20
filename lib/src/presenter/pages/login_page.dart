@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             'Entrar',
             style: TextStyle(
-              fontSize: 36,
+              fontSize: 32,
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
@@ -94,11 +94,11 @@ class _LoginPageState extends State<LoginPage> {
         // Campo de texto para senha do usuário
         TextField(
           controller: _passwordController,
-          obscureText: true,
+          obscureText: true, // oculta o texto para senha
           style: const TextStyle(color: Colors.white),
           decoration: _inputDecoration('Password'),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
 
         // Botão esqueceu senha
         Align(
@@ -109,11 +109,11 @@ class _LoginPageState extends State<LoginPage> {
             },
             child: const Text(
               'Esqueceu a senha?',
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: Color.fromARGB(179, 255, 255, 255)),
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
 
         // Botão entrar em formato pílula
         Center(
@@ -171,27 +171,36 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 1) Background
-          Image.asset('assets/assets/image.png', fit: BoxFit.cover),
+          // 1) Background (repetindo)
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/image.png'),
+                repeat: ImageRepeat.repeat, // repete em X e Y
+                fit: BoxFit.none, // mantém tamanho original do tile
+                alignment: Alignment.topLeft,
+              ),
+            ),
+          ),
 
           // 2) Overlay escuro por cima
-          Container(color: Colors.black.withOpacity(0.35)),
+          Container(color: Colors.black.withOpacity(0.7)),
 
           // 3) Painel central
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(16.0),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
+                constraints: const BoxConstraints(maxWidth: 500),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 36,
-                    vertical: 32,
+                    horizontal: 32.0,
+                    vertical: 20.0,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6A1B9A).withOpacity(0.75),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white.withOpacity(0.15)),
+                    color: const Color.fromARGB(255, 71, 20, 102),
+                    borderRadius: BorderRadius.circular(2),
+                    border: Border.all(color: const Color.fromARGB(255, 47, 39, 53).withOpacity(0.8)),
                   ),
                   child: _buildLoginForm(context),
                 ),
