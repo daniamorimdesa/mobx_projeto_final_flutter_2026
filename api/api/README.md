@@ -15,17 +15,6 @@ Navegue até a pasta `api/api` e execute:
 poetry install
 ```
 
-### Popular o banco de dados (primeira vez)
-Após a instalação, popule o banco com dados iniciais:
-
-```bash
-poetry run python populate_db.py
-```
-
-Isso criará:
-- Usuário de teste: `joao` / `1234`
-- 5 filmes de exemplo
-
 ### Executar a API
 ```bash
 poetry run uvicorn main:app --reload

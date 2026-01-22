@@ -76,7 +76,6 @@ class MoviesDatasource {
       throw Exception("Erro ao alugar filme: $e");
     }
   }
-}
 
   // método watchMovie via POST: assistir um filme para o usuário
   Future<bool> watchMovie(int userId, int movieId) async {
@@ -87,7 +86,7 @@ class MoviesDatasource {
         ..movieId = movieId;
       // requisição POST
       final response = await client.post(
-        Uri.parse('http://127.0.0.1:8000/rental-movie'),
+        Uri.parse('http://127.0.0.1:8000/watch-movie'),
         body: rental.writeToBuffer(), // serializa o rental
         headers: {'Content-Type': 'application/octet-stream'},
       );
@@ -95,7 +94,7 @@ class MoviesDatasource {
     } on http.ClientException catch (e) {
       throw Exception("Não foi possível conectar ao servidor: $e");
     } catch (e) {
-      throw Exception("Erro ao alugar filme: $e");
+      throw Exception("Erro ao marcar filme como assistido: $e");
     }
   }
 }

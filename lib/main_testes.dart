@@ -1,3 +1,4 @@
+// main_testes.dart: versão de main para testes
 import 'package:flutter/material.dart';
 import 'package:projeto_final_flutter_2026/src/external/adapters/user_adapter.dart';
 import 'package:projeto_final_flutter_2026/src/external/datasources/movies_datasource.dart';
@@ -69,11 +70,9 @@ void testeProto() {
   }
 }
 
-
-Future<void> testMoviesEndpoints() async {
-  User? user;
-  
-  // 1) login do usuário para obter user com id
+Future<User?> testeLogin() async{
+    // 1) login do usuário para obter user com id
+    User? user;
   try {
     final credentials = User()
       ..username = "joao"
@@ -81,12 +80,15 @@ Future<void> testMoviesEndpoints() async {
 
     user = await UserDatasource().login(credentials);
     debugPrint("Usuário logado: ${user.username} com id ${user.id}");
+    return user;
   } catch (e) {
     debugPrint('Falha no login: $e');
-    return; // se o login falhar, não continua
+    return null; // se o login falhar, retorna null
   }
+}
 
-  // 2) Filmes disponíveis - available-movies
+Future<void> testeAvailableMovies() async {
+    // 2) Filmes disponíveis - available-movies
   try {
     final movies = await MoviesDatasource().getAvailableMovies();
     debugPrint("Quantidade de filmes: ${movies.length}");
@@ -95,8 +97,10 @@ Future<void> testMoviesEndpoints() async {
   } catch (e) {
     debugPrint('Falha ao buscar filmes: $e');
   }
+}
 
-  // 3) Filmes alugados pelo usuário - movies-rental-by-user
+Future<void> testeMoviesRentalsbyUser(User user) async {
+    // 3) Filmes alugados pelo usuário - movies-rental-by-user
   try {
     final rentals = await MoviesDatasource().getMoviesRentalByUser(user);
     debugPrint("Quantidade de filmes alugados pelo usuário: ${rentals.length}");
@@ -106,4 +110,59 @@ Future<void> testMoviesEndpoints() async {
   } catch (e) {
     debugPrint('Falha ao buscar filmes alugados: $e');
   }
+}
+
+Future<void> testeRentalMovie(int userId) async {
+    // 4) Alugar um filme - rental-movie
+  try {
+    final success = await MoviesDatasource().rentalMovie(userId, 1); // alugar filme com id 1
+    if (success) {
+      debugPrint("Filme alugado com sucesso!");
+    } else {
+      debugPrint("Falha ao alugar o filme.");
+    }
+  } catch (e) {
+    debugPrint('Falha ao alugar o filme: $e');
+  }
+}
+
+Future<void> testeWatchMovie(int userId) async {
+    // 5) Marcar filme como assistido - watch-movie
+  try {
+    final success = await MoviesDatasource().watchMovie(userId, 1); // assistir filme com id 1
+    if (success) {
+      debugPrint("Filme marcado como assistido com sucesso!");
+    } else {
+      debugPrint("Falha ao marcar o filme como assistido.");
+    }
+  } catch (e) {
+    debugPrint('Falha ao marcar o filme como assistido: $e');
+  }
+}
+
+// testar rotas de movies
+Future<void> testMoviesEndpoints() async {
+  // 1) login do usuário para obter user com id
+  final user = await testeLogin();
+  if (user == null) {
+    return; // se o login falhar, não continua
+  }
+
+  // 2) Filmes disponíveis - available-movies
+  await testeAvailableMovies();
+
+  // 3) Filmes alugados pelo usuário - movies-rental-by-user
+  await testeMoviesRentalsbyUser(user);
+
+  // 4) Alugar um filme - rental-movie
+  await testeRentalMovie(user.id);
+
+  // testar novamente os filmes alugados pelo usuário
+  await testeMoviesRentalsbyUser(user);
+
+  // 5) Marcar filme como assistido - watch-movie
+  await testeWatchMovie(user.id);
+
+  // testar novamente os filmes alugados pelo usuário
+  await testeMoviesRentalsbyUser(user);
 }

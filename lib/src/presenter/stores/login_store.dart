@@ -24,7 +24,17 @@ class LoginStore extends ChangeNotifier {
       notifyListeners();
       return true; // retorna verdadeiro se o login for bem-sucedido
     } catch (e) {
-      errorMessage = e.toString(); // armazena a mensagem de erro
+      debugPrint("Login error: $e");
+      final msg = e.toString().toLowerCase();
+      if (msg.contains("credenciais inválidas") || msg.contains("401")) {
+        errorMessage = "Usuário ou senha inválidos. Tente novamente.";
+      } else if (msg.contains("conectar ao servidor") ||
+          msg.contains("socket")) {
+        errorMessage =
+            "Não foi possível conectar ao servidor. Verifique se a API está rodando.";
+      } else {
+        errorMessage = "Ocorreu um erro ao tentar entrar. Tente novamente.";
+      }
       notifyListeners(); // notifica para atualizar a UI
       return false; // retorna falso se ocorrer um erro
     }
@@ -34,6 +44,12 @@ class LoginStore extends ChangeNotifier {
   void logout() {
     _user = User(); // reseta o usuário
     errorMessage = ""; // limpa mensagens de erro
+    notifyListeners();
+  }
+
+  // método para limpar a mensagem de erro
+  void clearError() {
+    errorMessage = "";
     notifyListeners();
   }
 }

@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:projeto_final_flutter_2026/src/presenter/pages/home_page.dart';
 import 'package:projeto_final_flutter_2026/src/presenter/stores/login_store.dart';
+import 'package:projeto_final_flutter_2026/src/presenter/pages/home/home_page.dart';
+import 'package:projeto_final_flutter_2026/src/presenter/stores/user_store.dart';
+import 'package:projeto_final_flutter_2026/src/presenter/pages/components/error_box.dart';
 
 // widget da página de login
 class LoginPage extends StatefulWidget {
@@ -29,6 +31,10 @@ class _LoginPageState extends State<LoginPage> {
 
     // se o login for bem-sucedido e o widget ainda estiver montado, navegar para a HomePage
     if (success && mounted) {
+      final loggedUser = context.read<LoginStore>().user;
+      // inicializar o UserStore com o usuário logado
+      context.read<UserStore>().initUser(loggedUser);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -88,6 +94,10 @@ class _LoginPageState extends State<LoginPage> {
           controller: _usernameController,
           style: const TextStyle(color: Colors.white),
           decoration: _inputDecoration('Username'),
+          // limpar mensagem de erro ao digitar
+          onChanged: (_) {
+            context.read<LoginStore>().clearError();
+          },
         ),
         const SizedBox(height: 16),
 
@@ -97,6 +107,10 @@ class _LoginPageState extends State<LoginPage> {
           obscureText: true, // oculta o texto para senha
           style: const TextStyle(color: Colors.white),
           decoration: _inputDecoration('Password'),
+          // limpar mensagem de erro ao digitar
+          onChanged: (_) {
+            context.read<LoginStore>().clearError();
+          },
         ),
         const SizedBox(height: 4),
 
@@ -130,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               child: const Text(
-                'Entrar',
+                'entrar',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
@@ -140,26 +154,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Exibe mensagem de erro se houver
         if (context.watch<LoginStore>().errorMessage.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              color: Colors.red.shade900.withOpacity(0.8),
-              border: Border.all(color: Colors.red.shade300),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.error, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    context.watch<LoginStore>().errorMessage,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ErrorBox(message: context.watch<LoginStore>().errorMessage),
       ],
     );
   }
@@ -200,7 +195,14 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 71, 20, 102),
                     borderRadius: BorderRadius.circular(2),
-                    border: Border.all(color: const Color.fromARGB(255, 47, 39, 53).withOpacity(0.8)),
+                    border: Border.all(
+                      color: const Color.fromARGB(
+                        255,
+                        47,
+                        39,
+                        53,
+                      ).withOpacity(0.8),
+                    ),
                   ),
                   child: _buildLoginForm(context),
                 ),

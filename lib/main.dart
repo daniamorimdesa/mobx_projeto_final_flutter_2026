@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_final_flutter_2026/src/presenter/pages/login_page.dart';
 import 'package:projeto_final_flutter_2026/src/presenter/stores/login_store.dart';
+import 'package:projeto_final_flutter_2026/src/presenter/stores/user_store.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => LoginStore())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserStore()),
+        ChangeNotifierProvider(create: (context) => LoginStore()),
+      ],
       child: const MainApp(),
     ),
   );
