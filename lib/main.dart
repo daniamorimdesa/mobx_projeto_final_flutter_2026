@@ -12,7 +12,7 @@ void main() async {
   // Configurar tamanho mínimo da janela
   await windowManager.ensureInitialized();
   
-  await windowManager.setMinimumSize(const Size(1050, 650)); // tamanho mínimo da janela
+  await windowManager.setMinimumSize(const Size(1050, 630)); // tamanho mínimo da janela
   
   runApp(
     MultiProvider(
