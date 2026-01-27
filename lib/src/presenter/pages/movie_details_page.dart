@@ -55,26 +55,47 @@ class MovieDetailsPage extends StatelessWidget {
 
             Future<void> onPrimaryPressed() async {
               if (isRentalMode) {
-                final ok = await context.read<UserStore>().rentalMovie(movie); // alugar filme
+                final ok = await context.read<UserStore>().rentalMovie(
+                  movie,
+                ); // alugar filme
                 if (!context.mounted) return;
 
                 if (ok) {
                   Navigator.pop(context); // voltar se sucesso
                 } else if (context.read<UserStore>().errorMessage.isNotEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar( // mostrar erro se houver
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    // mostrar erro se houver
                     SnackBar(
-                      content: Text(context.read<UserStore>().errorMessage),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // claro elegante
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      margin: const EdgeInsets.all(16),
+                      content: Text(
+                        context.read<UserStore>().errorMessage,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 57, 4, 90), // roxo do seu tema
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      duration: const Duration(seconds: 5),
                     ),
                   );
                 }
               } else {
-                final ok = await context.read<UserStore>().watchMovie(movie); // assistir filme
+                final ok = await context.read<UserStore>().watchMovie(
+                  movie,
+                ); // assistir filme
                 if (!context.mounted) return;
 
                 if (ok) {
                   Navigator.pop(context); // voltar se sucesso
-                } else if (context.read<UserStore>().errorMessage.isNotEmpty) { // mostrar erro se houver
-                  ScaffoldMessenger.of(context).showSnackBar( // mostrar erro se houver
+                } else if (context.read<UserStore>().errorMessage.isNotEmpty) {
+                  // mostrar erro se houver
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    // mostrar erro se houver
                     SnackBar(
                       content: Text(context.read<UserStore>().errorMessage),
                     ),
@@ -228,7 +249,10 @@ class MovieDetailsPage extends StatelessWidget {
                               width: buttonW,
                               height: buttonH,
                               child: OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () {
+                                  context.read<UserStore>().clearError();
+                                  Navigator.pop(context);
+                                },
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: Colors.white70,
                                   side: BorderSide(
@@ -250,7 +274,9 @@ class MovieDetailsPage extends StatelessWidget {
                               width: buttonW,
                               height: buttonH,
                               child: ElevatedButton(
-                                onPressed: primaryLoading ? null : () => onPrimaryPressed(),
+                                onPressed: primaryLoading
+                                    ? null
+                                    : () => onPrimaryPressed(),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   foregroundColor: const Color(0xFF4B0377),
@@ -262,7 +288,9 @@ class MovieDetailsPage extends StatelessWidget {
                                     ? SizedBox(
                                         height: (22 * s).clamp(18.0, 24.0),
                                         width: (22 * s).clamp(18.0, 24.0),
-                                        child: const CircularProgressIndicator(strokeWidth: 2),
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
                                       )
                                     : Text(
                                         primaryLabel,

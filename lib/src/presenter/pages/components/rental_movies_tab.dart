@@ -18,7 +18,7 @@ class RentalMoviesTab extends StatelessWidget {
     }
 
     // se houver erro, mostrar mensagem de erro
-    if (store.errorMessage.isNotEmpty) {
+    if (store.errorMessage.isNotEmpty && store.rentalMovies.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -46,17 +46,11 @@ class RentalMoviesTab extends StatelessWidget {
           // abre a página de detalhes do filme
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => MovieDetailsPage(movie: movie, mode: MoveDetailsMode.watch)),
+            MaterialPageRoute(
+              builder: (_) =>
+                  MovieDetailsPage(movie: movie, mode: MoveDetailsMode.watch),
+            ),
           );
-          // Navigator.push(
-          // final ok = await context.read<UserStore>().watchMovie(movie);
-          // if (!context.mounted) return;
-
-          // if (!ok && context.read<UserStore>().errorMessage.isNotEmpty) {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(content: Text(context.read<UserStore>().errorMessage)),
-          //   );
-          // }
         },
       ),
     );

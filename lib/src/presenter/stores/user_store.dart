@@ -9,7 +9,7 @@ class UserStore extends ChangeNotifier {
 
   // instâncias dos datasources para reutilização
   final _moviesDs = MoviesDatasource();
- 
+
   // váriavel para guardar a lista de filmes disponíveis
   List<Movie> availableMovies = [];
 
@@ -24,6 +24,12 @@ class UserStore extends ChangeNotifier {
 
   // variável para armazenar mensagens de erro
   String errorMessage = "";
+
+  // método para limpar mensagem de erro
+  void clearError() {
+    errorMessage = "";
+    notifyListeners();
+  }
 
   // método para salvar o user no estado e notificar UI
   void initUser(User user) {
@@ -96,11 +102,13 @@ class UserStore extends ChangeNotifier {
       return false;
     }
 
+    errorMessage = ""; // limpar mensagem de erro
+    notifyListeners();
+
     try {
-      errorMessage = "";
       // checar se filme já está alugado
       if (rentalMovies.any((m) => m.id == movie.id)) {
-        errorMessage = "Este filme já foi alugado";
+        errorMessage = "Este filme já foi alugado. Acesse a aba de filmes alugados para assisti-lo :)";
         notifyListeners();
         return false;
       }

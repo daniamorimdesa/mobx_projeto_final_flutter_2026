@@ -19,13 +19,18 @@ class AvailableMoviesTab extends StatelessWidget {
     }
 
     // se houver erro, mostrar mensagem de erro
-    if (store.errorMessage.isNotEmpty) {
+    if (store.errorMessage.isNotEmpty && store.availableMovies.isEmpty) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2B003F).withOpacity(0.9), 
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFF9C27B0), width: 1.2),
+          ),
           child: Text(
             store.errorMessage,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white, fontSize: 16),
             textAlign: TextAlign.center,
           ),
         ),
@@ -65,7 +70,10 @@ class AvailableMoviesTab extends StatelessWidget {
           // abre a tela de detalhes
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => MovieDetailsPage(movie: movie, mode: MoveDetailsMode.rental)),
+            MaterialPageRoute(
+              builder: (_) =>
+                  MovieDetailsPage(movie: movie, mode: MoveDetailsMode.rental),
+            ),
           );
         },
       ),
