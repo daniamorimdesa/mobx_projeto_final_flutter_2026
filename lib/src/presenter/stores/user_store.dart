@@ -33,7 +33,7 @@ class UserStore extends ChangeNotifier {
 
   // método para salvar o user no estado e notificar UI
   void initUser(User user) {
-    this._user = user;
+    _user = user;
     // limpar estado de filmes
     availableMovies = [];
     rentalMovies = [];

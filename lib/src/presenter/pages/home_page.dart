@@ -18,15 +18,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    super.initState();
-
-    // buscar filmes disponíveis e alugados ao iniciar a HomePage
-    // Future.microtask para garantir que o contexto esteja disponível
-    Future.microtask(() {
-      final userStore = context.read<UserStore>();
+    final userStore = context.read<UserStore>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       userStore.getAvailableMovies();
       userStore.getRentalMovies();
-    });
+    },);
+    super.initState();
   }
 
   // método para Limpar o estado do usuário (logout)
