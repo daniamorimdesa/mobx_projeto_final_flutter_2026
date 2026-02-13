@@ -1,4 +1,4 @@
-# Projeto Final Flutter 2026 🎬
+# Projeto Final Flutter 2026 - Versão MobX 🎬
 
 Aplicação Flutter de locadora de filmes desenvolvida para estudar e aplicar conceitos fundamentais de arquitetura, gerenciamento de estado e comunicação com backend.
 
