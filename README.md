@@ -10,7 +10,14 @@ Aplicação Flutter de locadora de filmes desenvolvida para estudar e aplicar co
 - Integração Flutter + Backend Python (FastAPI)
 - Comunicação eficiente entre cliente e servidor
 
-### 2. Arquitetura em Camadas
+### 2. Gerenciamento de Estado com MobX
+- **Observables** - Estados reativos com `@observable`
+- **Actions** - Métodos que modificam o estado com `@action`
+- **Computed** - Valores derivados com `@computed`
+- **Reactions** - Reatividade automática na UI com `Observer`
+- **Code Generation** - Geração automática de código reativo com `build_runner`
+
+### 3. Arquitetura em Camadas
 
 #### **PROTO** - Estrutura de Dados
 Definição dos modelos de dados usando Protocol Buffers:
@@ -43,22 +50,48 @@ Camada de comunicação com a API:
 - `movies_datasource.dart` - Operações com filmes (listar, alugar, assistir)
 
 #### **STORE** - Lógica de Negócio e Estado
-Gerenciamento de estado usando `ChangeNotifier` (Provider):
-- Armazenamento do estado da aplicação
-- Lógica de negócio (regras e validações)
-- Notificação de mudanças para a UI
+Gerenciamento de estado usando **MobX**:
+- Estados observáveis com `@observable` (ex: `isLoading`, `errorMessage`, `user`)
+- Ações que modificam estado com `@action` (ex: `login()`, `getAvailableMovies()`)
+- Valores computados com `@computed` (ex: `isAuthenticated`, `hasError`)
+- Listas reativas com `ObservableList<Movie>`
+- Notificação automática de mudanças para a UI
 - Controle de carregamento e erros
 
 **Localização:** `lib/src/presenter/stores/`
-- `login_store.dart` - Estado e lógica de login
-- `user_store.dart` - Estado do usuário, filmes disponíveis e alugados
+- `login_store.dart` + `login_store.g.dart` - Estado e lógica de login
+- `user_store.dart` + `user_store.g.dart` - Estado do usuário, filmes disponíveis e alugados
+
+**Exemplo de Store MobX:**
+```dart
+class UserStore = _UserStoreBase with _$UserStore;
+
+abstract class _UserStoreBase with Store {
+  @observable
+  bool isLoadingAvailable = false;
+  
+  @observable
+  ObservableList<Movie> availableMovies = ObservableList<Movie>();
+  
+  @computed
+  bool get hasMovies => availableMovies.isNotEmpty;
+  
+  @action
+  Future<void> getAvailableMovies() async {
+    isLoadingAvailable = true;
+    // ... lógica
+    isLoadingAvailable = false;
+  }
+}
+```
 
 #### **UI** - Apresentação
 Interface do usuário e componentes visuais:
 - Páginas principais da aplicação
 - Componentes reutilizáveis
-- Consumo dos Stores via `Provider`
-- Reatividade e atualizações da tela
+- Consumo dos Stores via `Provider` (injeção) e `context.read<Store>()`
+- Reatividade automática com widget `Observer` do MobX
+- Atualizações eficientes e granulares da tela
 
 **Localização:** `lib/src/presenter/pages/`
 - `login_page.dart` - Tela de autenticação
@@ -66,11 +99,21 @@ Interface do usuário e componentes visuais:
 - `movie_details_page.dart` - Detalhes do filme
 - `components/` - Componentes reutilizáveis
 
-### 3. Gerenciamento de Estado
-- **Provider** - Padrão escolhido para state management
-- **ChangeNotifier** - Notificação de mudanças de estado
-- **MultiProvider** - Múltiplos providers na árvore de widgets
-- Estado reativo na UI
+**Exemplo de uso do Observer:**
+```dart
+Widget build(BuildContext context) {
+  final store = context.read<UserStore>();
+  
+  return Observer(
+    builder: (_) {
+      if (store.isLoadingAvailable) {
+        return CircularProgressIndicator();
+      }
+      return MoviesGrid(movies: store.availableMovies.toList());
+    },
+  );
+}
+```
 
 ### 4. Recursos Flutter
 
@@ -109,9 +152,11 @@ Interface do usuário e componentes visuais:
    - Configuração do cliente HTTP
 
 ### Fase 3: Lógica e Estado
-4. **Criação dos Stores**
-   - `LoginStore` - Gerenciamento de autenticação
+4. **Criação dos Stores com MobX**
+   - `LoginStore` - Gerenciamento de autenticação com `@observable` e `@action`
    - `UserStore` - Gerenciamento de usuário logado e filmes
+   - Definição de observables, actions e computed properties
+   - Geração de código com `build_runner`
 
 ### Fase 4: Interface
 5. **Desenvolvimento das Páginas**
@@ -127,9 +172,11 @@ Interface do usuário e componentes visuais:
    - `ErrorBox` - Componente de exibição de erros
 
 ### Fase 5: Integração e Configuração
-7. **Configuração do Provider**
+7. **Configuração do Provider e MobX**
    - Setup do `MultiProvider` no `main.dart`
-   - Injeção de dependências dos Stores
+   - Injeção de dependências dos Stores MobX
+   - Uso de `Observer` widgets para reatividade
+   - Execução do `build_runner` para gerar arquivos `.g.dart`
 
 8. **Configuração Desktop**
    - Integração do `window_manager`
@@ -139,11 +186,17 @@ Interface do usuário e componentes visuais:
 
 ### Frontend (Flutter)
 - **Flutter SDK**: ^3.10.4
-- **provider**: ^6.1.5+1 - Gerenciamento de estado
+- **mobx**: ^2.3.0 - Gerenciamento de estado reativo
+- **flutter_mobx**: ^2.2.0 - Widgets para integração MobX + Flutter
+- **provider**: ^6.1.5+1 - Injeção de dependências
 - **http**: ^1.5.0 - Cliente HTTP
 - **protobuf**: ^4.2.0 - Protocol Buffers
 - **fixnum**: ^1.1.1 - Números fixos para protobuf
 - **window_manager**: ^0.3.8 - Controle de janela desktop
+
+### DevDependencies
+- **build_runner**: ^2.4.11 - Execução de geradores de código
+- **mobx_codegen**: ^2.6.1 - Gerador de código MobX
 
 ### Backend (Python/FastAPI)
 - **FastAPI** - Framework web
@@ -167,9 +220,11 @@ lib/
     │       ├── user_datasource.dart
     │       └── movies_datasource.dart
     └── presenter/              # Camada de apresentação
-        ├── stores/             # Estado e lógica
+        ├── stores/             # Estado e lógica (MobX)
         │   ├── login_store.dart
-        │   └── user_store.dart
+        │   ├── login_store.g.dart      # Gerado pelo build_runner
+        │   ├── user_store.dart
+        │   └── user_store.g.dart       # Gerado pelo build_runner
         └── pages/              # Interface
             ├── login_page.dart
             ├── home_page.dart
@@ -188,7 +243,13 @@ lib/
 ### Frontend (Flutter)
 1. Certifique-se de ter o Flutter instalado
 2. Instale as dependências: `flutter pub get`
-3. Execute a aplicação: `flutter run`
+3. Gere os arquivos MobX: `dart run build_runner build --delete-conflicting-outputs`
+4. Execute a aplicação: `flutter run -d windows`
+
+**Nota:** Durante o desenvolvimento, você pode usar o watch mode para gerar código automaticamente:
+```bash
+dart run build_runner watch --delete-conflicting-outputs
+```
 
 ## 📝 Funcionalidades
 
@@ -205,10 +266,15 @@ lib/
 
 1. **Arquitetura Limpa**: Separação clara de responsabilidades em camadas
 2. **Protocol Buffers**: Comunicação eficiente e tipada entre frontend e backend
-3. **State Management**: Uso prático do Provider para gerenciar estado complexo
+3. **State Management com MobX**: 
+   - Reatividade automática e eficiente
+   - Decorators para simplificar código (`@observable`, `@action`, `@computed`)
+   - Separação clara entre estado e lógica
+   - Code generation para boilerplate
 4. **Assincronicidade**: Tratamento de operações assíncronas com Future/async/await
 5. **Componentização**: Criação de componentes reutilizáveis e modulares
 6. **Desktop Flutter**: Configurações específicas para aplicações desktop
+7. **Build Runner**: Geração automática de código com ferramentas de build
 
 ---
 
